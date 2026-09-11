@@ -18,8 +18,11 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Fallback to jpg or png if configured
-  const screenshotSrc = project.screenshot || `/screenshots/${project.id}.jpg`;
+  // Fallback to relative path supporting GitHub Pages subdirectories
+  const rawPath = project.screenshot || `screenshots/${project.id}.jpg`;
+  const cleanPath = rawPath.replace(/^\//, '');
+  const base = import.meta.env.BASE_URL || './';
+  const screenshotSrc = `${base.endsWith('/') ? base : `${base}/`}${cleanPath}`;
 
   if (imageError) {
     // Elegant Architectural Fallback when screenshot hasn't been uploaded yet

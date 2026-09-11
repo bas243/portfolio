@@ -19,26 +19,46 @@ export const Loader: React.FC<LoaderProps> = ({ onComplete }) => {
   const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
+    // Escape key listener to skip immediately
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFinished(true);
+        onComplete();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Hard fallback timer (max 2.2 seconds) to ensure loader never hangs
+    const safetyTimeout = setTimeout(() => {
+      setIsFinished(true);
+      onComplete();
+    }, 2200);
+
     // Smooth progress counter
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
+          clearTimeout(safetyTimeout);
           setTimeout(() => {
             setIsFinished(true);
-            setTimeout(onComplete, 400);
-          }, 300);
+            setTimeout(onComplete, 300);
+          }, 200);
           return 100;
         }
-        const jump = Math.floor(Math.random() * 14) + 6;
+        const jump = Math.floor(Math.random() * 16) + 10;
         const next = Math.min(prev + jump, 100);
         const stepIdx = Math.min(Math.floor((next / 100) * STEPS.length), STEPS.length - 1);
         setCurrentStepIndex(stepIdx);
         return next;
       });
-    }, 90);
+    }, 80);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(safetyTimeout);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [onComplete]);
 
   return (
