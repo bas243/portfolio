@@ -3,7 +3,7 @@ import { SiteConfig } from '../types';
 export const siteConfig: SiteConfig = {
   developerName: 'BASIT NABI',
   title: 'CREATIVE DEVELOPER & DIGITAL ARCHITECT',
-  location: 'KASHMIR',
+  location: 'JAMMU & KASHMIR',
   coordinates: '34.0837° N, 74.7973° E',
   availability: true,
   status: 'ONLINE // ACCEPTING Q2/Q3 COMMISSIONS',

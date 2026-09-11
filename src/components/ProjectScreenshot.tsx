@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project } from '../types';
-import { Monitor, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { ExternalLink, Sparkles, RefreshCw, Layers } from 'lucide-react';
 
 interface ProjectScreenshotProps {
   project: Project;
@@ -15,42 +15,100 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
   mode = 'card',
   isHovered = false,
 }) => {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Fallback to relative path supporting GitHub Pages subdirectories
-  const rawPath = project.screenshot || `screenshots/${project.id}.jpg`;
-  const cleanPath = rawPath.replace(/^\//, '');
   const base = import.meta.env.BASE_URL || './';
-  const screenshotSrc = `${base.endsWith('/') ? base : `${base}/`}${cleanPath}`;
+  const normalizedBase = base.endsWith('/') ? base : `${base}/`;
 
-  if (imageError) {
-    // Elegant Architectural Fallback when screenshot hasn't been uploaded yet
+  // Candidate sources to try in priority order:
+  // 1. Explicit project screenshot or local jpg
+  // 2. Local png
+  // 3. Local webp
+  // 4. High-resolution live capture via thum.io
+  // 5. Secondary live capture via microlink
+  const candidateSources: string[] = React.useMemo(() => {
+    const custom = project.screenshot
+      ? `${normalizedBase}${project.screenshot.replace(/^\//, '')}`
+      : null;
+
+    const list: (string | null)[] = [
+      custom,
+      `${normalizedBase}screenshots/${project.id}.jpg`,
+      `${normalizedBase}screenshots/${project.id}.png`,
+      `${normalizedBase}screenshots/${project.id}.webp`,
+      project.liveUrl ? `https://image.thum.io/get/width/1200/crop/750/noanimate/${project.liveUrl}` : null,
+      project.liveUrl ? `https://api.microlink.io?url=${encodeURIComponent(project.liveUrl)}&screenshot=true&meta=false&embed=screenshot.url` : null,
+    ];
+
+    // Remove duplicates and nulls
+    return Array.from(new Set(list.filter(Boolean) as string[]));
+  }, [project, normalizedBase]);
+
+  const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [allFailed, setAllFailed] = useState(false);
+
+  // Reset if project changes
+  useEffect(() => {
+    setCurrentSourceIndex(0);
+    setImageLoaded(false);
+    setAllFailed(false);
+  }, [project.id]);
+
+  const handleImageError = () => {
+    if (currentSourceIndex < candidateSources.length - 1) {
+      setCurrentSourceIndex((prev) => prev + 1);
+      setImageLoaded(false);
+    } else {
+      setAllFailed(true);
+    }
+  };
+
+  const currentSrc = candidateSources[currentSourceIndex];
+
+  if (allFailed) {
+    // High-End Interactive Fallback when offline or images fail
     return (
       <div
-        className={`relative w-full rounded-xl overflow-hidden bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] border border-slate-200/80 flex flex-col items-center justify-center p-6 text-center ${className}`}
+        className={`relative w-full rounded-xl overflow-hidden bg-gradient-to-br from-[#0f172a] to-[#1e293b] text-white border border-slate-200/80 flex flex-col items-center justify-center p-6 text-center ${className}`}
         style={{ minHeight: mode === 'card' ? '220px' : '380px' }}
       >
-        {/* Subtle architectural background grid */}
-        <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
 
         <div
-          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-transform duration-300 shadow-xs"
-          style={{ backgroundColor: `${project.accentColor}15`, color: project.accentColor }}
+          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-transform duration-300 shadow-lg border border-white/10"
+          style={{ backgroundColor: `${project.accentColor}25`, color: project.accentColor }}
         >
-          <Monitor className="w-7 h-7" />
+          <Layers className="w-7 h-7" />
         </div>
 
-        <div className="font-display font-bold text-lg text-[#09090b] tracking-tight uppercase">
+        <div className="font-display font-bold text-lg text-white tracking-tight uppercase">
           {project.title}
         </div>
-        <p className="font-body text-xs text-slate-500 max-w-xs mt-1 line-clamp-2">
-          {project.tagline}
+        <p className="font-body text-xs text-slate-300 max-w-xs mt-1 line-clamp-2">
+          {project.summary}
         </p>
 
-        <div className="mt-4 px-3 py-1 rounded-full bg-white/90 border border-slate-200 text-slate-500 font-mono-code text-[10px] flex items-center space-x-1.5 shadow-xs">
-          <ImageIcon className="w-3 h-3 text-slate-400" />
-          <span>UPLOAD TO: /public{screenshotSrc}</span>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="px-3.5 py-1.5 rounded-lg bg-[#2563eb] hover:bg-blue-500 text-white font-mono-code text-[11px] font-semibold flex items-center space-x-1.5 transition-all shadow-md"
+            >
+              <span>LAUNCH LIVE SITE</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          )}
+          <button
+            onClick={() => {
+              setAllFailed(false);
+              setCurrentSourceIndex(0);
+            }}
+            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 font-mono-code text-[11px] flex items-center space-x-1.5 transition-colors cursor-pointer"
+          >
+            <RefreshCw className="w-3 h-3" />
+            <span>RETRY</span>
+          </button>
         </div>
       </div>
     );
@@ -58,7 +116,7 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
 
   return (
     <div
-      className={`relative w-full rounded-xl overflow-hidden border border-slate-200/90 bg-slate-900 group/screen shadow-xs ${className}`}
+      className={`relative w-full rounded-xl overflow-hidden border border-slate-200/90 bg-slate-950 group/screen shadow-xs ${className}`}
       style={{ minHeight: mode === 'card' ? '220px' : '400px' }}
     >
       {/* Mini Virtual Browser Toolbar */}
@@ -67,7 +125,7 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
           <span className="w-2 h-2 rounded-full bg-slate-300" />
           <span className="w-2 h-2 rounded-full bg-slate-300" />
           <span className="w-2 h-2 rounded-full bg-slate-300" />
-          <span className="ml-2 font-semibold text-slate-600 truncate max-w-[140px] sm:max-w-[200px]">
+          <span className="ml-2 font-semibold text-slate-700 truncate max-w-[140px] sm:max-w-[200px]">
             {project.title}
           </span>
         </div>
@@ -78,25 +136,29 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
               {project.highlightBadge}
             </span>
           )}
-          <span className="text-[9px] text-emerald-600 font-bold hidden sm:inline">LIVE PREVIEW</span>
+          <span className="text-[9px] text-emerald-600 font-bold hidden sm:inline flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            LIVE PREVIEW
+          </span>
         </div>
       </div>
 
       {/* Screenshot Image Container with Hover Pan / Zoom */}
-      <div className="relative w-full h-full overflow-hidden bg-slate-950 flex items-start justify-center">
+      <div className="relative w-full h-full overflow-hidden bg-slate-900 flex items-start justify-center">
         {!imageLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-100 font-mono-code text-xs text-slate-400">
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-100/90 font-mono-code text-xs text-slate-500 z-10">
             <span className="animate-pulse flex items-center space-x-2">
               <Sparkles className="w-4 h-4 text-[#2563eb]" />
-              <span>INITIALIZING PREVIEW...</span>
+              <span>SYNCING WEBSITE PREVIEW...</span>
             </span>
           </div>
         )}
 
         <img
-          src={screenshotSrc}
-          alt={`${project.title} Website Screenshot`}
-          onError={() => setImageError(true)}
+          key={currentSrc}
+          src={currentSrc}
+          alt={`${project.title} Website Preview`}
+          onError={handleImageError}
           onLoad={() => setImageLoaded(true)}
           loading="lazy"
           className={`w-full object-cover object-top transition-transform duration-700 ease-out ${
@@ -118,3 +180,4 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
     </div>
   );
 };
+

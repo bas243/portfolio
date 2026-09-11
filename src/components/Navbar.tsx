@@ -47,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => 
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-40 px-4 sm:px-8 py-4 sm:py-6 flex items-center justify-between pointer-events-none">
+      <header className="fixed top-0 left-0 w-full z-40 px-4 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between pointer-events-none">
         {/* Left Branding */}
         <div className="pointer-events-auto flex items-center space-x-3 bg-white/95 backdrop-blur-md px-3.5 sm:px-4 py-2 rounded-full border border-slate-200/90 shadow-[0_2px_15px_rgba(0,0,0,0.05)]">
           <button
@@ -67,12 +67,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => 
           </span>
         </div>
 
-        {/* Center Clock / Kashmir Telemetry (Desktop) */}
-        <div className="hidden lg:flex items-center space-x-4 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200/90 font-mono-code text-[11px] text-slate-600 shadow-[0_2px_15px_rgba(0,0,0,0.04)]">
-          <span className="text-[#2563eb] font-semibold">KASHMIR:</span>
-          <span className="text-slate-900 font-medium">{time} GMT+5:30</span>
+        {/* Center Clock / Jammu & Kashmir Telemetry (Desktop) */}
+        <div className="hidden lg:flex items-center space-x-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200/90 font-mono-code text-[11px] text-slate-600 shadow-[0_2px_15px_rgba(0,0,0,0.04)]">
+          <span className="text-[#2563eb] font-semibold whitespace-nowrap">JAMMU & KASHMIR:</span>
+          <span className="text-slate-900 font-medium whitespace-nowrap">{time} IST</span>
           <span className="text-slate-300">•</span>
-          <span className="text-emerald-700 font-semibold flex items-center gap-1.5 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
+          <span className="text-emerald-700 font-semibold flex items-center gap-1.5 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
             OPEN FOR COMMISSIONS
           </span>
@@ -172,7 +172,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => 
               <div className="flex items-center space-x-4">
                 <span className="text-slate-700 font-medium">BASIT NABI // CREATIVE DEVELOPER & ARCHITECT</span>
                 <span>•</span>
-                <span>KASHMIR / WORKING GLOBALLY</span>
+                <span>JAMMU & KASHMIR / WORKING GLOBALLY</span>
               </div>
               <div className="flex items-center space-x-5 text-[#2563eb] font-semibold flex-wrap justify-center gap-y-2">
                 <a href="https://github.com/bas243" target="_blank" rel="noreferrer" className="hover:underline">GITHUB</a>

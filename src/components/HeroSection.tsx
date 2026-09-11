@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Hero3DScene } from './Hero3DScene';
-import { ArrowDown, Terminal, Sparkles, ShieldCheck } from 'lucide-react';
+import { ArrowDown, Sparkles, ShieldCheck } from 'lucide-react';
 import { sound } from '../utils/audio';
 
 interface HeroSectionProps {
@@ -11,30 +11,12 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onExplore, onContact }) => {
   return (
-    <section id="hero" className="relative w-full min-h-screen flex flex-col justify-between p-6 sm:p-10 md:p-14 overflow-hidden pt-24 sm:pt-28 bg-[#f8fafc]">
+    <section id="hero" className="relative w-full min-h-screen flex flex-col justify-between p-5 sm:p-8 md:p-12 pt-20 sm:pt-24 pb-6 sm:pb-8 bg-[#f8fafc] overflow-hidden">
       {/* 3D WebGL Background Canvas */}
       <Hero3DScene />
 
-      {/* Top HUD Metadata */}
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono-code text-[11px] text-slate-500 tracking-wider">
-        <div className="flex items-center space-x-2 bg-white/95 border border-slate-200 px-3.5 py-1.5 rounded-full shadow-sm backdrop-blur-md">
-          <Terminal className="w-3.5 h-3.5 text-[#2563eb]" />
-          <span className="text-slate-800 font-medium">DESIGN ENGINEER & CREATIVE DEVELOPER</span>
-        </div>
-
-        <div className="flex flex-wrap gap-2 sm:gap-4 text-[10px] sm:text-xs text-slate-500">
-          <span className="text-[#2563eb] font-semibold">INTERACTIVE WEB</span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-700 font-medium">SHOPIFY COMMERCE</span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-700 font-medium">3D & THREE.JS</span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-700 font-medium">MOTION SYSTEMS</span>
-        </div>
-      </div>
-
-      {/* Massive Display Typography */}
-      <div className="relative z-10 my-auto py-10 sm:py-14 max-w-4xl xl:max-w-5xl pointer-events-none">
+      {/* Massive Display Typography - perfectly centered and fully visible */}
+      <div className="relative z-10 my-auto py-3 sm:py-5 max-w-4xl xl:max-w-5xl pointer-events-none">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -58,7 +40,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExplore, onContact }
         </motion.div>
 
         {/* Action Button Row */}
-        <div className="mt-8 flex flex-wrap items-center gap-4 pointer-events-auto">
+        <div className="mt-5 sm:mt-7 flex flex-wrap items-center gap-3.5 pointer-events-auto">
           <button
             onClick={() => {
               sound.playClick();
@@ -66,7 +48,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExplore, onContact }
             }}
             onMouseEnter={() => sound.playHover()}
             data-cursor="EXPLORE"
-            className="group relative inline-flex items-center space-x-3 px-7 sm:px-9 py-4 rounded-full bg-[#09090b] text-white font-mono-code text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-[#2563eb] shadow-[0_4px_16px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_25px_rgba(37,99,235,0.3)] transition-all duration-300"
+            className="group relative inline-flex items-center space-x-3 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-[#09090b] text-white font-mono-code text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-[#2563eb] shadow-[0_4px_16px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_25px_rgba(37,99,235,0.3)] transition-all duration-300"
           >
             <span>EXPLORE WORK</span>
             <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
@@ -79,7 +61,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExplore, onContact }
             }}
             onMouseEnter={() => sound.playHover()}
             data-cursor="START"
-            className="inline-flex items-center space-x-2 px-7 sm:px-9 py-4 rounded-full border border-slate-300 bg-white/95 backdrop-blur-md text-[#09090b] font-mono-code text-xs sm:text-sm font-semibold uppercase tracking-wider hover:border-[#2563eb] hover:text-[#2563eb] hover:bg-blue-50/50 transition-all shadow-xs"
+            className="inline-flex items-center space-x-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full border border-slate-300 bg-white/95 backdrop-blur-md text-[#09090b] font-mono-code text-xs sm:text-sm font-semibold uppercase tracking-wider hover:border-[#2563eb] hover:text-[#2563eb] hover:bg-blue-50/50 transition-all shadow-xs"
           >
             <ShieldCheck className="w-4 h-4 text-[#2563eb]" />
             <span>START A PROJECT</span>
@@ -91,7 +73,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExplore, onContact }
       <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-slate-200/90 pt-4 gap-4 font-mono-code text-xs text-slate-500">
         <div className="flex items-center space-x-3">
           <span className="text-[#2563eb] font-semibold">LOCATION:</span>
-          <span className="text-slate-900 font-bold">KASHMIR</span>
+          <span className="text-slate-900 font-bold">JAMMU & KASHMIR</span>
           <span className="text-slate-300">//</span>
           <span className="text-slate-600 font-medium">WORKING WORLDWIDE</span>
         </div>

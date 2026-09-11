@@ -77,7 +77,7 @@ export const Loader: React.FC<LoaderProps> = ({ onComplete }) => {
               <span>PORTFOLIO // 2026</span>
             </div>
             <div className="hidden sm:flex items-center space-x-6">
-              <span>KASHMIR / REMOTE</span>
+              <span>JAMMU & KASHMIR / REMOTE</span>
               <span>CREATIVE DEVELOPER</span>
             </div>
             <button
