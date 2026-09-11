@@ -1,9 +1,10 @@
-name: Deploy Vite to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
       - main
+      - master
   workflow_dispatch:
 
 permissions:
@@ -22,19 +23,18 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 22
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      - name: Build Vite App
+      - name: Build Application
         run: npm run build
 
       - name: Setup Pages
